@@ -22,5 +22,5 @@ jobs:
             s4u/maven-settings-action
             s4u/testing
           FILES: |
-            common-files/=.
+            common-files/.
           TOKEN: ${{ secrets.TECH_TOKEN }}

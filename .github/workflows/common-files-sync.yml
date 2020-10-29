@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.3
+
+      - name: show workspace
+        run: pwd; echo "$GITHUB_WORKSPACE"; ls -l
+
       - name: Sync
         uses: kbrashears5/github-action-file-sync@v2.0.0
         with:

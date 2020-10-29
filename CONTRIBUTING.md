@@ -2,7 +2,7 @@
 
 Contributions are welcome! 
  
-We thanks everybody for support us - one of the easiest  way is giving a :star: 
+We thank everybody for support us - one of the easiest  way is giving a :star: 
 
 ## Bugs
 

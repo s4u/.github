@@ -1,7 +1,7 @@
 version: 2
 updates:
 - package-ecosystem: github-actions
-  directory: "/release-drafter/"
+  directory: "/common-files/"
   schedule:
     interval: daily
     time: '09:09'

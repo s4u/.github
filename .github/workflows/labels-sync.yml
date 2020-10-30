@@ -9,9 +9,11 @@ on:
       - '.github/workflows/labels-sync.yml'
 
 jobs:
+
   labels_sync:
 
     strategy:
+      fail-fast: false
       matrix:
         repo:
           - s4u/jfatek

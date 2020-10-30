@@ -1,0 +1,8 @@
+- name: bug
+  description: Something isn't working
+  color: d73a4a
+
+- name: good first issue
+  description: Good for newcomers
+  color: 7057ff
+

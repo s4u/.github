@@ -1,0 +1,30 @@
+name: labels-sync
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/labels.yml'
+      - '.github/workflows/labels-sync.yml'
+
+jobs:
+  labels_sync:
+
+    strategy:
+      matrix:
+        repo:
+          - s4u/testing
+          - s4u/jfatek
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.3
+
+      - name: Sync
+        uses: micnncim/action-label-syncer@v1.2.0
+        with:
+          repository: ${{ matrix.repo }}
+          token: ${{ secrets.TECH_TOKEN }}
+          prune: false

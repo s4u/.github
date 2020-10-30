@@ -1,8 +1,44 @@
 - name: bug
-  description: Something isn't working
+  description: Something isn't working.
   color: d73a4a
 
+- name: code quality
+  description: Improvements, refactor or code cleanup.
+  color: 6ae2bc
+
+- name: documentation
+  description: Improvements or additions to documentation.
+  color: 0075ca
+
+- name: duplicate
+  description: This issue or pull request already exists.
+  color: cfd3d7
+
+- name: enhancement
+  description: New feature or request.
+  color: 9bf287
+
 - name: good first issue
-  description: Good for newcomers
+  description: Good for newcomers.
   color: 7057ff
+
+- name: hacktoberfest
+  color: 9c4648
+
+- name: help wanted
+  description: Extra attention is needed.
+  color: 008672
+
+- name: invalid
+  description: This doesn't seem right.
+  color: cfd3d7
+
+- name: question
+  description: Further information is requested.
+  color: e8df45
+
+- name: wontfix
+  description: This will not be worked on.
+  color: ffffff
+
 

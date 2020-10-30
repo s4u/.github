@@ -9,8 +9,18 @@ on:
       - '.github/workflows/common-files-sync.yml'
 
 jobs:
-  file_sync:
+
+  sync:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        repo:
+          - s4u/maven-settings-action
+          - s4u/testing
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.3
@@ -18,9 +28,6 @@ jobs:
       - name: Sync
         uses: kbrashears5/github-action-file-sync@v2.2.0
         with:
-          REPOSITORIES: |
-            s4u/maven-settings-action
-            s4u/testing
-          FILES: |
-            common-files/.
           TOKEN: ${{ secrets.TECH_TOKEN }}
+          REPOSITORIES: ${{ matrix.repo }}
+          FILES: common-files/.

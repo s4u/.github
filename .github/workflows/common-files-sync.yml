@@ -30,5 +30,6 @@ jobs:
         uses: slawekjaranowski/github-action-file-sync@fix-4
         with:
           TOKEN: ${{ secrets.TECH_TOKEN }}
-          REPOSITORIES: ${{ matrix.repo }}
+          REPOSITORIES: ${{ matrix.repo }}@common-files-sync
           FILES: common-files/.
+          PULL_REQUEST: true

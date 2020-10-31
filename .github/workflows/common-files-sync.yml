@@ -17,6 +17,7 @@ jobs:
       matrix:
         repo:
           - s4u/maven-settings-action
+          - s4u/sitemapxml-maven-plugin
           - s4u/testing
 
     runs-on: ubuntu-latest

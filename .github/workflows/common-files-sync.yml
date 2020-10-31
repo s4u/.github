@@ -30,4 +30,4 @@ jobs:
         with:
           TOKEN: ${{ secrets.TECH_TOKEN }}
           REPOSITORIES: ${{ matrix.repo }}
-          FILES: common-files-x/.
+          FILES: common-files/.

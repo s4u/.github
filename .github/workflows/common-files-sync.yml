@@ -23,13 +23,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.3
+      - uses: actions/checkout@v2.3.3
 
-      - name: Sync
-        uses: slawekjaranowski/github-action-file-sync@master
+      - uses: slawekjaranowski/github-action-file-sync@master
         with:
-          TOKEN: ${{ secrets.TECH_TOKEN }}
-          REPOSITORIES: ${{ matrix.repo }}@common-files-sync
+          TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          REPOSITORIES: ${{ matrix.repo }}
           FILES: common-files/.
-          PULL_REQUEST: true

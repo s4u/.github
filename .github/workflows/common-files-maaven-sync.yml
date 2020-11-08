@@ -1,0 +1,34 @@
+name: common-files-maven-sync
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'common-files-maven/**'
+      - '.github/workflows/common-files-maven-sync.yml'
+
+jobs:
+
+  sync:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        repo:
+          - s4u/jfatek
+          - s4u/parent
+          - s4u/pgp-keys-map
+          - s4u/slf4j-mock
+          - s4u/testing
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - uses: slawekjaranowski/github-action-file-sync@master
+        with:
+          TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          REPOSITORIES: ${{ matrix.repo }}
+          FILES: common-files-maven/.

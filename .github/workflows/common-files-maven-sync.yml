@@ -17,8 +17,9 @@ jobs:
       matrix:
         repo:
           - s4u/jfatek
-          - s4u/parent
           - s4u/pgp-keys-map
+          - s4u/parent
+          - s4u/sitemapxml-maven-plugin
           - s4u/slf4j-mock
           - s4u/testing
 

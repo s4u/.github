@@ -18,10 +18,10 @@ jobs:
         repo:
           - s4u/jfatek
           - s4u/maven-settings-action
-          - s4u/sitemapxml-maven-plugin
           - s4u/parent
-          - s4u/pgpverify-maven-plugin
           - s4u/pgp-keys-map
+          - s4u/pgpverify-maven-plugin
+          - s4u/sitemapxml-maven-plugin
           - s4u/slf4j-mock
           - s4u/testing
 

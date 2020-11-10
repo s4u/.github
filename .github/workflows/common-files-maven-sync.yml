@@ -19,9 +19,9 @@ jobs:
           - s4u/jfatek
           - s4u/parent
           - s4u/pgp-keys-map
+          - s4u/pgpverify-maven-plugin
           - s4u/sitemapxml-maven-plugin
           - s4u/slf4j-mock
-          - s4u/testing
 
     runs-on: ubuntu-latest
 

@@ -1,3 +1,7 @@
+- name: todo
+  description: Something that has to be done.
+  color: 4287f5
+
 - name: bug
   description: Something isn't working.
   color: d73a4a

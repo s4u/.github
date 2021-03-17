@@ -33,6 +33,10 @@
   description: Extra attention is needed.
   color: 008672
 
+- name: in design
+  description: Design work should be finished before coding.
+  color: f4d118
+
 - name: invalid
   description: This doesn't seem right.
   color: cfd3d7
@@ -40,6 +44,10 @@
 - name: question
   description: Further information is requested.
   color: e8df45
+
+- name: to grab
+  description: Issue is ready for coding.
+  color: 5319e7
 
 - name: wontfix
   description: This will not be worked on.

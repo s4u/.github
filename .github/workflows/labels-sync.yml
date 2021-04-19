@@ -8,6 +8,8 @@ on:
       - '.github/labels.yml'
       - '.github/workflows/labels-sync.yml'
 
+concurrency: labels-sync
+
 jobs:
 
   sync:

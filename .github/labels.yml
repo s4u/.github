@@ -1,10 +1,10 @@
 - name: todo
-  description: Something that has to be done.
-  color: 4287f5
+  description: Assigned and will be done.
+  color: 0E8A16
 
 - name: bug
   description: Something isn't working.
-  color: d73a4a
+  color: B60205
 
 - name: code quality
   description: Improvements, refactor or code cleanup.
@@ -20,7 +20,7 @@
 
 - name: enhancement
   description: New feature or request.
-  color: 9bf287
+  color: 0E8A16
 
 - name: good first issue
   description: Good for newcomers.
@@ -37,6 +37,10 @@
   description: Design work should be finished before coding.
   color: f4d118
 
+- name: on hold
+  description: Wait until something else will be done.
+  color: B60205
+
 - name: invalid
   description: This doesn't seem right.
   color: cfd3d7
@@ -46,7 +50,7 @@
   color: e8df45
 
 - name: to grab
-  description: Issue is ready for coding.
+  description: Ready to do and to grab by those willing.
   color: 5319e7
 
 - name: wontfix

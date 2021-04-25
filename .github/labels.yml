@@ -10,6 +10,10 @@
   description: Improvements, refactor or code cleanup.
   color: 6ae2bc
 
+- name: deprecation
+  description: Feature or some public api is made deprecated by this issue.
+  color: B60205
+
 - name: documentation
   description: Improvements or additions to documentation.
   color: 0075ca

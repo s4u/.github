@@ -45,3 +45,6 @@ replacers:
 
   - search: '/(?:and )?GitHub Action(?:\[bot\])?,?/gi'
     replace: ''
+
+  - search: '/ ?and ?/g'
+    replace: ''

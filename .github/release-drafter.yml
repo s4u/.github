@@ -48,3 +48,6 @@ replacers:
 
   - search: '/ ?and ?/g'
     replace: ''
+
+  - search: '/,$/g'
+    replace: ''

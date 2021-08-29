@@ -56,7 +56,7 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-
 
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: ${{ matrix.java }}
           settings-sonatypeSnapshots: true
@@ -94,7 +94,7 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-test-
 
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
@@ -120,7 +120,7 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-deploy-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-
 
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
@@ -150,7 +150,7 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-deploy-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-
 
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true

@@ -41,7 +41,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - uses: s4u/setup-maven-action@v1.1.0
+      - uses: s4u/setup-maven-action@v1.2.0
         with:
           java-version: ${{ matrix.java }}
           settings-sonatypeSnapshots: true
@@ -78,7 +78,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: s4u/setup-maven-action@v1.1.0
+      - uses: s4u/setup-maven-action@v1.2.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true

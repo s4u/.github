@@ -19,11 +19,16 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v2.3.4
+      with:
+        persist-credentials: false
 
     - name: Read preoject environemnts
       shell: bash
       run: |
-        if [ -f .github/build.env ]; then cat .github/build.env >> $GITHUB_ENV; fi
+        if [ -f .github/build.env ]; then
+          echo "Use project build.env"
+          cat .github/build.env >> $GITHUB_ENV;
+        fi
 
     - name: Set outputs
       shell: bash

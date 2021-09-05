@@ -1,0 +1,37 @@
+name: 'Setup'
+description: 'Common Project properties'
+
+outputs:
+  branch:
+    description: ''
+    value: ${{ steps.setup.outputs.branch }}
+  date-ym:
+    description: ''
+    value: ${{ steps.setup.outputs.date-ym }}
+  sonar:
+    description: ''
+    value: ${{ steps.setup.outputs.sonar }}
+  maven-matrix:
+    description: ''
+    value: ${{ steps.setup.outputs.maven-matrix }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2.3.4
+
+    - name: Read preoject environemnts
+      shell: bash
+      run: |
+        if [ -f .github/build.env ]; then cat .github/build.env >> $GITHUB_ENV; fi
+
+    - name: Set outputs
+      shell: bash
+      id: setup
+      run: |
+        echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+        echo "::set-output name=date-ym::$(date +%y%m)"
+        echo "::set-output name=sonar::2de0e32b2b3108965f76a4713ba2028978c233ed"
+
+        : ${MAVEN_MATRIX:=[\"3.8.2\"]}
+        echo "::set-output name=maven-matrix::${MAVEN_MATRIX}"

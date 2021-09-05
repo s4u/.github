@@ -10,10 +10,13 @@ outputs:
     value: ${{ steps.setup.outputs.date-ym }}
   sonar:
     description: ''
-    value: ${{ steps.setup.outputs.sonar }}
+    value: '2de0e32b2b3108965f76a4713ba2028978c233ed'
   maven-matrix:
     description: ''
     value: ${{ steps.setup.outputs.maven-matrix }}
+  maven-default:
+    description: ''
+    value: '3.8.2'
 
 runs:
   using: "composite"
@@ -36,7 +39,6 @@ runs:
       run: |
         echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
         echo "::set-output name=date-ym::$(date +%y%m)"
-        echo "::set-output name=sonar::2de0e32b2b3108965f76a4713ba2028978c233ed"
 
         : ${MAVEN_MATRIX:=[\"3.8.2\"]}
         echo "::set-output name=maven-matrix::${MAVEN_MATRIX}"

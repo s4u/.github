@@ -16,13 +16,13 @@ outputs:
     value: ${{ steps.setup.outputs.maven-matrix }}
   maven-default:
     description: ''
-    value: '3.8.1'
+    value: ${{ steps.setup.outputs.maven-default }}
   java-matrix:
     description: ''
     value: ${{ steps.setup.outputs.java-matrix }}
   java-default:
     description: ''
-    value: '1.8'
+    value: ${{ steps.setup.outputs.java-default }}
 
 runs:
   using: "composite"

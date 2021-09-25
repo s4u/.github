@@ -17,7 +17,7 @@ fi
 echo "::set-output name=maven-matrix::[${MAVEN_MATRIX}]"
 
 if [ -z "$JAVA_MATRIX" ]; then
-  JAVA_MATRIX='"1.8", "11", "17"'
+  JAVA_MATRIX='"8", "11", "17"'
 fi
 
 echo "::set-output name=java-matrix::[${JAVA_MATRIX}]"

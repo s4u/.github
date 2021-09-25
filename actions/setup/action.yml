@@ -23,6 +23,9 @@ outputs:
   java-default:
     description: ''
     value: ${{ steps.setup.outputs.java-default }}
+  java-distribution-matrix:
+    description: ''
+    value: ${{ steps.setup.outputs.java-distribution-matrix }}
 
 runs:
   using: "composite"

@@ -18,7 +18,10 @@ if [ -z "${GITHUB_REF##*tags*}" ]; then
   echo "tag=${TAG}"
 fi
 
-MAVEN_DEFAULT='3.8.1'
+if [ -z "${MAVEN_DEFAULT}" ]; then
+  MAVEN_DEFAULT='3.8.1'
+fi
+
 echo "::set-output name=maven-default::${MAVEN_DEFAULT}"
 echo "maven-default=${MAVEN_DEFAULT}"
 
@@ -29,9 +32,19 @@ fi
 echo "::set-output name=maven-matrix::[${MAVEN_MATRIX}]"
 echo "maven-matrix=[${MAVEN_MATRIX}]"
 
-JAVA_DEFAULT='8'
+if [ -z "${JAVA_DEFAULT}" ]; then
+  JAVA_DEFAULT='8'
+fi
+
 echo "::set-output name=java-default::${JAVA_DEFAULT}"
 echo "java-default=${JAVA_DEFAULT}"
+
+if [ -z "$JAVA_DISTRIBUTION_MATRIX" ]; then
+  JAVA_DISTRIBUTION_MATRIX='"zulu"'
+fi
+
+echo "::set-output name=java-distribution-matrix::[${JAVA_DISTRIBUTION_MATRIX}]"
+echo "java-distribution-matrix=[${JAVA_DISTRIBUTION_MATRIX}]"
 
 if [ -z "$JAVA_MATRIX" ]; then
   JAVA_MATRIX='"8", "11", "17"'

@@ -16,7 +16,13 @@ outputs:
     value: ${{ steps.setup.outputs.maven-matrix }}
   maven-default:
     description: ''
-    value: '3.8.2'
+    value: '3.8.1'
+  java-matrix:
+    description: ''
+    value: ${{ steps.setup.outputs.java-matrix }}
+  java-default:
+    description: ''
+    value: '1.8'
 
 runs:
   using: "composite"
@@ -30,15 +36,10 @@ runs:
       run: |
         if [ -f .github/build.env ]; then
           echo "Use project build.env"
-          cat .github/build.env >> $GITHUB_ENV;
+          grep -e "^[A-Z_]\+=[0-9a-zA-Z\., \"\-]\+$" .github/build.env >> $GITHUB_ENV;
         fi
 
     - name: Set outputs
       shell: bash
       id: setup
-      run: |
-        echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
-        echo "::set-output name=date-ym::$(date +%y%m)"
-
-        : ${MAVEN_MATRIX:=[\"3.8.2\"]}
-        echo "::set-output name=maven-matrix::${MAVEN_MATRIX}"
+      run: ${{ github.action_path }}/setup.sh

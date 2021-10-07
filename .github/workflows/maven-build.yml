@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      java-matrix:
+        default: '"8", "11", "16", "17"'
+        type: string
+
+      maven-matrix:
+        default: '"3.8.3"'
+        type: string
+
+jobs:
+
+  build:
+    name: Build ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
+
+    runs-on: ${{ matrix.os.name }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - name: ubuntu-latest
+            label: Linux
+          - name: windows-latest
+            label: Windows
+          - name: macOS-latest
+            label: macOS
+        java:  ${{ fromJSON( inputs.java-matrix ) }}
+        maven: ${{ fromJSON( inputs.maven-matrix ) }}
+
+    steps:
+      - uses: s4u/setup-maven-action@v1.2.1
+        with:
+          checkout-fetch-depth: 0
+          java-version: ${{ matrix.java }}
+          maven-version: ${{ matrix.maven }}
+
+      - run: mvn --errors --show-version verify

@@ -4,17 +4,60 @@ on:
   workflow_call:
     inputs:
       java-matrix:
-        default: '["8", "11", "16", "17"]'
+        default: '["8", "11", "17"]'
+        type: string
+
+      java-default:
+        default: '8'
         type: string
 
       maven-matrix:
         default: '["3.8.3"]'
         type: string
 
+      maven-default:
+        default: '3.8.3'
+        type: string
+
+    secrets:
+      SIGN_KEY:
+        required: true
+
+      OSS_USER:
+        required: true
+
+      OSS_PASS:
+        required: true
+
+      TECH_TOKEN:
+        required: true
+
+      GITHUB_TOKEN:
+        required: true
+
 jobs:
 
-  build:
-    name: Build ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+
+    if: |
+      startsWith(github.ref, 'refs/tags/')
+      || !startsWith(github.event.head_commit.message , '[maven-release-plugin] prepare release')
+
+    outputs:
+      branch: ${{ steps.setup.outputs.branch }}
+      tag: ${{ steps.setup.outputs.tag }}
+      date-ym: ${{ steps.setup.outputs.date-ym }}
+      sonar: ${{ steps.setup.outputs.sonar }}
+
+    steps:
+      - id: setup
+        uses: s4u/.github/actions/setup@master
+
+  verify:
+    name: ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
+    needs: setup
 
     runs-on: ${{ matrix.os.name }}
 
@@ -28,7 +71,7 @@ jobs:
             label: Windows
           - name: macOS-latest
             label: macOS
-        java:  ${{ fromJSON( inputs.java-matrix ) }}
+        java: ${{ fromJSON( inputs.java-matrix ) }}
         maven: ${{ fromJSON( inputs.maven-matrix ) }}
 
     steps:
@@ -37,5 +80,115 @@ jobs:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
           maven-version: ${{ matrix.maven }}
+          settings-sonatypeSnapshots: true
+          settings-properties: |
+            [
+              {"sonar.login": "${{ needs.setup.outputs.sonar }}"},
+              {"sonar.branch.name": "${{ needs.setup.outputs.branch }}"}
+            ]
+          cache-prefix: ${{ needs.setup.outputs.date-ym }}-
+          cache-path-add: ~/.sonar/cache
 
-      - run: mvn --errors --show-version verify
+      - name: sonar setup
+        id: sonar
+        run: echo "::set-output name=mvn-args::sonar:sonar -P coverage"
+        if: >
+          matrix.os.name == 'ubuntu-latest'
+          && matrix.java == '11'
+          && matrix.maven == fromJSON( inputs.maven-matrix )[0]
+          && github.repository_owner == 's4u'
+          && startsWith( github.ref, 'refs/heads/')
+
+      - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
+
+  site-test:
+    name: Maven Site - Test
+    needs: setup
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: s4u/setup-maven-action@v1.2.1
+        with:
+          java-version: ${{ inputs.java-default }}
+          maven-version: ${{ inputs.maven-default }}
+          settings-sonatypeSnapshots: true
+          cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-
+
+      - run: mvn --errors --show-version site
+
+  deploy:
+    name: Deploy
+    concurrency: maven-deploy
+
+    if: github.repository_owner == 's4u'
+
+    needs: [ setup, verify, site-test ]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: s4u/setup-maven-action@v1.2.1
+        with:
+          java-version: ${{ inputs.java-default }}
+          maven-version: ${{ inputs.maven-default }}
+          settings-sonatypeSnapshots: true
+          settings-servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
+          cache-prefix: ${{ needs.setup.outputs.date-ym }}-
+
+      - run: mvn --errors --show-version deploy -Dmaven.test.skip=true
+        env:
+          OSS_USER: ${{ secrets.OSS_USER }}
+          OSS_PASS: ${{ secrets.OSS_PASS }}
+          SIGN_KEY: ${{ secrets.SIGN_KEY }}
+
+  site-deploy:
+    name: Site - Deploy
+    concurrency: site-deploy
+    if: github.repository_owner == 's4u' && startsWith(github.ref, 'refs/tags/')
+
+    needs: [ setup, deploy ]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: s4u/setup-maven-action@v1.2.1
+        with:
+          java-version: ${{ inputs.java-default }}
+          maven-version: ${{ inputs.maven-default }}
+          settings-sonatypeSnapshots: true
+          settings-properties: |
+            [
+              {"username": "git"},
+              {"password": "${{ secrets.TECH_TOKEN }}"},
+              {"scmpublish.pubScmUrl": "scm:git:${{ github.event.repository.url}}"},
+              {"scmpublish.dryRun": "false"}
+            ]
+          cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-
+
+      - run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Action"
+
+      - run: mvn --errors --show-version site-deploy
+
+  publish-release:
+    name: Publish Release
+    concurrency: release-drafter
+
+    if: github.repository_owner == 's4u' && startsWith(github.ref, 'refs/tags/')
+
+    needs: [setup, site-deploy]
+    runs-on: ubuntu-latest
+
+    steps:
+      - id: tag
+        run: echo "::set-output name=name::${GITHUB_REF#refs/tags/}"
+
+      - uses: release-drafter/release-drafter@v5.15.0
+        with:
+          publish: false
+          name: ${{ sneeds.setup.outputs.tag }}
+          tag: ${{ needs.setup.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

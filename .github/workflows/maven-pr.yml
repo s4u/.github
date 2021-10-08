@@ -34,7 +34,7 @@ jobs:
         uses: s4u/.github/actions/setup@master
 
   verify:
-    name: Verify ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
+    name: ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
     needs: setup
 
     runs-on: ${{ matrix.os.name }}
@@ -99,7 +99,7 @@ jobs:
       - run: mvn --errors --show-version site
 
   verify-ok:
-    name: Verify OK
+    name: OK
     needs: [ verify, site-test ]
     runs-on: ubuntu-latest
 

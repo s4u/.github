@@ -10,7 +10,7 @@ outputs:
     value: ${{ steps.setup.outputs.date-ym }}
   sonar:
     description: ''
-    value: '2de0e32b2b3108965f76a4713ba2028978c233ed'
+    value: ${{ steps.setup.outputs.sonar }}
   maven-matrix:
     description: ''
     value: ${{ steps.setup.outputs.maven-matrix }}

@@ -1,0 +1,111 @@
+name: Pull requests
+
+on:
+  workflow_call:
+    inputs:
+      java-matrix:
+        default: '["8", "11", "17"]'
+        type: string
+
+      java-default:
+        default: '8'
+        type: string
+
+      maven-matrix:
+        default: '["3.8.3"]'
+        type: string
+
+      maven-default:
+        default: '3.8.3'
+        type: string
+
+concurrency:
+  group: pr-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+
+    outputs:
+      date-ym: ${{ steps.setup.outputs.date-ym }}
+      sonar: ${{ steps.setup.outputs.sonar }}
+
+    steps:
+      - id: setup
+        uses: s4u/.github/actions/setup@master
+
+  verify:
+    name: Verify ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
+    needs: setup
+
+    runs-on: ${{ matrix.os.name }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - name: ubuntu-latest
+            label: Linux
+          - name: windows-latest
+            label: Windows
+          - name: macOS-latest
+            label: macOS
+        java: ${{ fromJSON( inputs.java-matrix ) }}
+        maven: ${{ fromJSON( inputs.maven-matrix ) }}
+
+    steps:
+      - uses: s4u/setup-maven-action@v1.2.1
+        with:
+          checkout-fetch-depth: 0
+          java-version: ${{ matrix.java }}
+          maven-version: ${{ matrix.maven }}
+          settings-sonatypeSnapshots: true
+          settings-properties: |
+            [
+              {"sonar.pullrequest.key": "${{ github.event.number }}"},
+              {"sonar.pullrequest.base": "${{ github.event.pull_request.base.ref }}"},
+              {"sonar.pullrequest.branch": "${{ github.event.pull_request.head.repo.full_name }}/${{ github.event.pull_request.head.ref }}"},
+              {"sonar.pullrequest.github.repository": "${{ github.repository }}"},
+              {"sonar.login": "${{ needs.setup.outputs.sonar }}"},
+              {"sonar.scm.revision": "${{ github.event.pull_request.head.sha }}"}
+            ]
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-
+          cache-path-add: ~/.sonar/cache
+
+      - name: sonar setup
+        id: sonar
+        run: echo "::set-output name=mvn-args::sonar:sonar -P coverage"
+        if: >
+          matrix.os.name == 'ubuntu-latest'
+          && matrix.java == '11'
+          && matrix.maven == fromJSON( inputs.maven-matrix )[0]
+          && github.repository_owner == 's4u'
+
+      - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
+
+  site-test:
+    name: Maven Site - Test
+    needs: setup
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: s4u/setup-maven-action@v1.2.1
+        with:
+          java-version: ${{ inputs.java-default }}
+          maven-version: ${{ inputs.maven-default }}
+          settings-sonatypeSnapshots: true
+          cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-
+
+      - run: mvn --errors --show-version site
+
+  verify-ok:
+    name: Verify OK
+    needs: [ verify, site-test ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo ok

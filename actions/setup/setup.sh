@@ -2,6 +2,11 @@
 
 echo "::group::Setup preparing"
 
+SONAR=$(echo "MmRlMGUzMmIyYjMxMDg5NjVmNzZhNDcxM2JhMjAyODk3OGMyMzNlZAo=" | openssl base64 -d)
+
+echo "::add-mask::${SONAR}"
+echo "::set-output name=sonar::${SONAR}"
+
 DATE_YM=$(date +%y%m)
 echo "::set-output name=date-ym::${DATE_YM}"
 echo "date-ym=${DATE_YM}"

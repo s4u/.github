@@ -116,7 +116,7 @@ jobs:
       - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
 
   site-test:
-    name: Maven Site - Test
+    name: Site - Test
     needs: setup
 
     runs-on: ubuntu-latest

@@ -114,6 +114,8 @@ jobs:
           && startsWith( github.ref, 'refs/heads/')
 
       - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
+        env:
+          SIGN_KEY: ${{ secrets.SIGN_KEY }}
 
   site-test:
     name: Site - Test

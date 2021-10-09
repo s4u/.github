@@ -5,6 +5,9 @@ outputs:
   branch:
     description: ''
     value: ${{ steps.setup.outputs.branch }}
+  tag:
+    description: ''
+    value: ${{ steps.setup.outputs.tag }}
   date-ym:
     description: ''
     value: ${{ steps.setup.outputs.date-ym }}

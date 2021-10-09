@@ -23,6 +23,9 @@ on:
       SIGN_KEY:
         required: true
 
+      SIGN_KEY_PASS:
+        required: true
+
       OSS_USER:
         required: true
 
@@ -182,13 +185,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - id: tag
-        run: echo "::set-output name=name::${GITHUB_REF#refs/tags/}"
-
       - uses: release-drafter/release-drafter@v5.15.0
         with:
           publish: false
-          name: ${{ sneeds.setup.outputs.tag }}
+          name: ${{ needs.setup.outputs.tag }}
           tag: ${{ needs.setup.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

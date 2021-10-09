@@ -11,6 +11,14 @@ on:
         default: '8'
         type: string
 
+      java-dist-matrix:
+        default: '["zulu"]'
+        type: string
+
+      java-dist-default:
+        default: 'zulu'
+        type: string
+
       maven-matrix:
         default: '["3.8.3"]'
         type: string
@@ -34,7 +42,7 @@ jobs:
         uses: s4u/.github/actions/setup@master
 
   verify:
-    name: ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
+    name: ${{ matrix.os.label }} jdk-${{ matrix.java }}-${{ matrix.java-dist }} mvn-${{ matrix.maven }}
     needs: setup
 
     runs-on: ${{ matrix.os.name }}
@@ -50,6 +58,7 @@ jobs:
           - name: macOS-latest
             label: macOS
         java: ${{ fromJSON( inputs.java-matrix ) }}
+        java-dist: ${{ fromJSON( inputs.java-dist-matrix ) }}
         maven: ${{ fromJSON( inputs.maven-matrix ) }}
 
     steps:
@@ -57,6 +66,7 @@ jobs:
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
+          java-distribution: ${{ matrix.java-dist }}
           maven-version: ${{ matrix.maven }}
           settings-sonatypeSnapshots: true
           settings-properties: |
@@ -77,6 +87,7 @@ jobs:
         if: >
           matrix.os.name == 'ubuntu-latest'
           && matrix.java == '11'
+          && matrix.java-dist == fromJSON( inputs.java-dist-matrix )[0]
           && matrix.maven == fromJSON( inputs.maven-matrix )[0]
           && github.repository_owner == 's4u'
 
@@ -92,6 +103,7 @@ jobs:
       - uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: ${{ inputs.java-default }}
+          java-distribution: ${{ inputs.java-dist-default }}
           maven-version: ${{ inputs.maven-default }}
           settings-sonatypeSnapshots: true
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-

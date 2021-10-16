@@ -6,7 +6,10 @@ SONAR=$(echo "MmRlMGUzMmIyYjMxMDg5NjVmNzZhNDcxM2JhMjAyODk3OGMyMzNlZAo=" | openss
 
 echo "::set-output name=sonar::${SONAR}"
 
-DATE_YM=$(date +%y%m)
+if [ -z "${DATE_YM}" ]; then
+  DATE_YM=$(date +%y%m)
+fi
+
 echo "::set-output name=date-ym::${DATE_YM}"
 echo "date-ym=${DATE_YM}"
 

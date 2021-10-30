@@ -14,6 +14,10 @@
   description: Feature or some public api is made deprecated by this issue.
   color: B60205
 
+- name: breaking changes
+  description: Feature of some public api is made incompatible by this issue.
+  color: B60205
+
 - name: documentation
   description: Improvements or additions to documentation.
   color: 0075ca

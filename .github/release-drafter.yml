@@ -3,28 +3,28 @@
 #
 categories:
 
-  - title: 'New features'
+  - title: ':fire: New features'
     labels:
       - 'enhancement'
 
-  - title: 'Breaking changes'
+  - title: ':boom: Breaking changes'
     labels:
       - 'breaking changes'
 
-  - title: 'Deprecated features'
+  - title: ':exclamation: Deprecated features'
     labels:
       - 'deprecation'
 
-  - title: 'Bug Fixes'
+  - title: ':lady_beetle: Bug Fixes'
     labels:
       - 'bug'
 
-  - title: 'Maintenance'
+  - title: ':hammer: Maintenance'
     labels:
       - 'code quality'
       - 'documentation'
 
-  - title: 'Dependency updates'
+  - title: ':toolbox: Dependency updates'
     labels:
       -  'dependencies'
 
@@ -37,5 +37,5 @@ template: |
 
   $CHANGES
 
-  # Thanks
+  # :heart: Thanks
   Many thanks for collaboration on this release for: $CONTRIBUTORS

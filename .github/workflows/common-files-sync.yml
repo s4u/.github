@@ -31,7 +31,7 @@ jobs:
     concurrency: repo-sync-${{ matrix.repo }}
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.4.0
 
       - uses: slawekjaranowski/github-action-file-sync@master
         with:

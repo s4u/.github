@@ -5,26 +5,32 @@ on:
     inputs:
       java-matrix:
         default: '["8", "11", "17"]'
+        required: true
         type: string
 
       java-default:
         default: '8'
+        required: true
         type: string
 
       java-dist-matrix:
         default: '["zulu"]'
+        required: true
         type: string
 
       java-dist-default:
         default: 'zulu'
+        required: true
         type: string
 
       maven-matrix:
-        default: '["3.8.3"]'
+        default: '["3.8.4"]'
+        required: true
         type: string
 
       maven-default:
-        default: '3.8.3'
+        default: '3.8.4'
+        required: true
         type: string
 
 jobs:

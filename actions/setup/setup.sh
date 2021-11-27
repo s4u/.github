@@ -25,22 +25,6 @@ if [ -z "${GITHUB_REF##*tags*}" ]; then
   echo "tag=${TAG}"
 fi
 
-# maven
-
-if [ -z "${MAVEN_DEFAULT}" ]; then
-  MAVEN_DEFAULT='3.8.3'
-fi
-
-echo "::set-output name=maven-default::${MAVEN_DEFAULT}"
-echo "maven-default=${MAVEN_DEFAULT}"
-
-if [ -z "$MAVEN_MATRIX" ]; then
-  MAVEN_MATRIX='"3.8.3"'
-fi
-
-echo "::set-output name=maven-matrix::[${MAVEN_MATRIX}]"
-echo "maven-matrix=[${MAVEN_MATRIX}]"
-
 # java versions
 
 if [ -z "${JAVA_DEFAULT}" ]; then

@@ -14,12 +14,6 @@ outputs:
   sonar:
     description: ''
     value: ${{ steps.setup.outputs.sonar }}
-  maven-matrix:
-    description: ''
-    value: ${{ steps.setup.outputs.maven-matrix }}
-  maven-default:
-    description: ''
-    value: ${{ steps.setup.outputs.maven-default }}
   java-matrix:
     description: ''
     value: ${{ steps.setup.outputs.java-matrix }}

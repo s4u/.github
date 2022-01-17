@@ -204,7 +204,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: release-drafter/release-drafter@v5.15.0
+      - uses: release-drafter/release-drafter@v5.17.5
         with:
           publish: false
           name: ${{ needs.setup.outputs.tag }}

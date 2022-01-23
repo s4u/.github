@@ -35,6 +35,7 @@ sort-direction: 'ascending'
 exclude-contributors:
   - 'dependabot'
   - 'dependabot[bot]'
+  - 'GitHub Action'
 
 template: |
   # What's Changed

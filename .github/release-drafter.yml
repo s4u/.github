@@ -32,6 +32,10 @@ change-template: '- $TITLE #$NUMBER'
 
 sort-direction: 'ascending'
 
+exclude-contributors:
+  - 'dependabot'
+  - 'dependabot[bot]'
+
 template: |
   # What's Changed
 

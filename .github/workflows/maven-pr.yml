@@ -52,6 +52,7 @@ jobs:
     needs: setup
 
     runs-on: ${{ matrix.os.name }}
+    continue-on-error: ${{ matrix.os.can-fail }}
 
     strategy:
       fail-fast: false
@@ -59,10 +60,13 @@ jobs:
         os:
           - name: ubuntu-latest
             label: Linux
+            can-fail: false
           - name: windows-latest
             label: Windows
+            can-fail: false
           - name: macOS-latest
             label: macOS
+            can-fail: true
         java: ${{ fromJSON( inputs.java-matrix ) }}
         java-dist: ${{ fromJSON( inputs.java-dist-matrix ) }}
         maven: ${{ fromJSON( inputs.maven-matrix ) }}

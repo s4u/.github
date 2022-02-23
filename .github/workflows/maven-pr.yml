@@ -119,7 +119,12 @@ jobs:
   verify-ok:
     name: OK
     needs: [ verify, site-test ]
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo ok
+      - run: 'true'
+        if: needs.verify.status == 'success' && needs.site-test.status == 'success'
+
+      - run: 'false'
+        if: needs.verify.status != 'success' || needs.site-test.status != 'success'

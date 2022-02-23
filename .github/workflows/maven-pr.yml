@@ -124,7 +124,7 @@ jobs:
 
     steps:
       - run: 'true'
-        if: needs.verify.status == 'success' && needs.site-test.status == 'success'
+        if: needs.verify.result == 'success' && needs.site-test.result == 'success'
 
       - run: 'false'
-        if: needs.verify.status != 'success' || needs.site-test.status != 'success'
+        if: needs.verify.result != 'success' || needs.site-test.result != 'success'

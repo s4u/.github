@@ -1,7 +1,11 @@
 name: Auto Approve
 
 on:
-  workflow_call
+  workflow_call:
+    secrets:
+      TECH_TOKEN:
+        required: true
+
 
 jobs:
   auto-approve:

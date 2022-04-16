@@ -24,12 +24,12 @@ on:
         type: string
 
       maven-matrix:
-        default: '["3.8.4"]'
+        default: '["3.8.5"]'
         required: false
         type: string
 
       maven-default:
-        default: '3.8.4'
+        default: '3.8.5'
         required: false
         type: string
 

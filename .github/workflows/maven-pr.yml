@@ -118,8 +118,8 @@ jobs:
           settings-sonatypeSnapshots: true
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-
 
-      - run: mvn --errors --show-version site
-
+      - run: mvn --errors --show-version package site -Dmaven.test.skip=true
+ 
   verify-ok:
     name: OK
     needs: [ verify, site-test ]

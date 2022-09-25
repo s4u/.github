@@ -143,8 +143,8 @@ jobs:
           settings-sonatypeSnapshots: true
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-
 
-      - run: mvn --errors --show-version site
-
+      - run: mvn --errors --show-version package site -Dmaven.test.skip=true
+ 
   deploy:
     name: Deploy
     concurrency: maven-deploy
@@ -200,7 +200,7 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Action"
 
-      - run: mvn --errors --show-version site-deploy
+      - run: mvn --errors --show-version package site-deploy -Dmaven.test.skip=true
 
   publish-release:
     name: Publish Release

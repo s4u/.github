@@ -14,34 +14,10 @@ outputs:
   sonar:
     description: ''
     value: ${{ steps.setup.outputs.sonar }}
-  java-matrix:
-    description: ''
-    value: ${{ steps.setup.outputs.java-matrix }}
-  java-default:
-    description: ''
-    value: ${{ steps.setup.outputs.java-default }}
-  java-distribution-matrix:
-    description: ''
-    value: ${{ steps.setup.outputs.java-distribution-matrix }}
-  java-distribution-default:
-    description: ''
-    value: ${{ steps.setup.outputs.java-distribution-default }}
 
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2.3.4
-      with:
-        persist-credentials: false
-
-    - name: Read preoject environemnts
-      shell: bash
-      run: |
-        if [ -f .github/build.env ]; then
-          echo "Use project build.env"
-          grep -e "^[A-Z_]\+=[0-9a-zA-Z\., \"\-]\+$" .github/build.env >> $GITHUB_ENV;
-        fi
-
     - name: Set outputs
       shell: bash
       id: setup

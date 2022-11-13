@@ -93,7 +93,7 @@ jobs:
 
       - name: sonar setup
         id: sonar
-        run: echo "::set-output name=mvn-args::sonar:sonar -P coverage"
+        run: echo "mvn-args=sonar:sonar -P coverage" >> $GITHUB_OUTPUT
         if: >
           matrix.os.name == 'ubuntu-latest'
           && matrix.java == '11'

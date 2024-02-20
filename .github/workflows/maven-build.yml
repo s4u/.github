@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       java-matrix:
-        default: '["8", "11", "17"]'
+        default: '["8", "11", "17", "21"]'
         required: false
         type: string
 

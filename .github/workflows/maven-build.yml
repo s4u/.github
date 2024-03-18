@@ -40,6 +40,12 @@ on:
       SIGN_KEY_PASS:
         required: true
 
+      MAVEN_GPG_KEY:
+        required: true
+
+      MAVEN_GPG_PASSPHRASE:
+        required: true
+
       OSS_USER:
         required: true
 

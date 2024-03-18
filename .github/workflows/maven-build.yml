@@ -127,6 +127,8 @@ jobs:
       - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
         env:
           SIGN_KEY: ${{ secrets.SIGN_KEY }}
+          MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   site-test:
     name: Site - Test
@@ -170,6 +172,8 @@ jobs:
           OSS_USER: ${{ secrets.OSS_USER }}
           OSS_PASS: ${{ secrets.OSS_PASS }}
           SIGN_KEY: ${{ secrets.SIGN_KEY }}
+          MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   site-deploy:
     name: Site - Deploy

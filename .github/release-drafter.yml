@@ -28,7 +28,7 @@ categories:
     labels:
       -  'dependencies'
 
-change-template: '- $TITLE #$NUMBER'
+change-template: '- $TITLE ([#$NUMBER]($URL)) @$AUTHOR'
 
 sort-direction: 'ascending'
 

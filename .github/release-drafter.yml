@@ -1,6 +1,9 @@
 #
 # organization wide configuration for release-drafter
 #
+
+name-template: $RESOLVED_VERSION
+
 categories:
 
   - title: ':fire: New features'

@@ -4,16 +4,23 @@ on:
   workflow_call:
 
 jobs:
-  update_release_draft:
-    name: Update Release Draft
-    runs-on: ubuntu-latest
-    concurrency: release-drafter
+  detect-version:
 
     if: >
       github.repository_owner == 's4u'
       && !startsWith(github.event.head_commit.message , '[maven-release-plugin]')
 
+    runs-on: ubuntu-latest
+    concurrency: release-drafter
+    permissions: {}
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: 'false'
+
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
@@ -25,11 +32,21 @@ jobs:
           if [ -f pom.xml ]; then
             mvn --non-recursive help:evaluate -Dexpression=project.version -Doutput=target/version.txt
             V=$(cat target/version.txt)
-            echo "v=${V%-SNAPSHOT}" >> >> $GITHUB_OUTPUT
+            echo "version=${V%-SNAPSHOT}" >> >> $GITHUB_OUTPUT
           fi
+
+  update_release_draft:
+    name: Update Release Draft
+    runs-on: ubuntu-latest
+    concurrency: release-drafter
+    permissions:
+      contents: write
+    needs: detect-version
+
+    steps:
 
       - uses: release-drafter/release-drafter@v6.0.0
         with:
-          version: ${{ steps.version.outputs.v }}
+          version: ${{ needs.detect-version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

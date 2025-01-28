@@ -22,20 +22,27 @@ jobs:
         with:
           persist-credentials: 'false'
 
+      - id: has-pom
+        run: |
+          if [ -f pom.xml ]; then
+            echo "status=true" >> $GITHUB_OUTPUT
+          fi
+          cat $GITHUB_OUTPUT
+
       - uses: actions/setup-java@v4
+        if: steps.has-pom.outputs.status == 'true'
         with:
           java-version: '21'
           distribution: 'zulu'
           cache: 'maven'
 
       - id: version
+        if: steps.has-pom.outputs.status == 'true'
         run: |
-          if [ -f pom.xml ]; then
-            mvn --batch-mode --non-recursive help:evaluate -Dexpression=project.version -Doutput=target/version.txt
-            V=$(cat target/version.txt)
-            echo "version=${V%-SNAPSHOT}" >> $GITHUB_OUTPUT
-            cat $GITHUB_OUTPUT
-          fi
+          mvn --batch-mode --non-recursive help:evaluate -Dexpression=project.version -Doutput=target/version.txt
+          V=$(cat target/version.txt)
+          echo "version=${V%-SNAPSHOT}" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
 
   update_release_draft:
     name: Update Release Draft

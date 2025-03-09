@@ -7,13 +7,13 @@ tag-template: v$RESOLVED_VERSION
 
 categories:
 
-  - title: ':fire: New features'
-    labels:
-      - 'enhancement'
-
   - title: ':boom: Breaking changes'
     labels:
       - 'breaking changes'
+
+  - title: ':fire: New features'
+    labels:
+      - 'enhancement'
 
   - title: ':exclamation: Deprecated features'
     labels:

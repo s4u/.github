@@ -182,7 +182,7 @@ jobs:
             }]
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-
 
-      - run: mvn --errors --show-version deploy -Dmaven.test.skip=true
+      - run: mvn --errors --show-version deploy -Dnjord.enabled=true -Dmaven.test.skip=true
         env:
           OSS_USER: ${{ secrets.OSS_USER }}
           OSS_PASS: ${{ secrets.OSS_PASS }}

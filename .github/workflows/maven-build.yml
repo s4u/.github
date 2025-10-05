@@ -210,7 +210,7 @@ jobs:
             [
               {"username": "git"},
               {"password": "${{ secrets.TECH_TOKEN }}"},
-              {"scmpublish.pubScmUrl": "scm:git:${{ github.event.repository.url}}"},
+              {"scmpublish.pubScmUrl": "scm:git:${{ github.event.repository.clone_url}}"},
               {"scmpublish.dryRun": "false"}
             ]
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-maven-site-

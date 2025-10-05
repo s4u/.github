@@ -170,7 +170,16 @@ jobs:
           java-distribution: ${{ inputs.java-dist-default }}
           maven-version: ${{ inputs.maven-default }}
           settings-sonatypeSnapshots: true
-          settings-servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
+          settings-servers: |
+            [{
+              "id": "sonatype-central-portal", 
+              "username": "${env.OSS_USER}", 
+              "password": "${env.OSS_PASS}",
+              "configuration": {
+                "njord.publisher": "sonatype-cp"
+                "njord.releaseUrl": "njord:template:release-sca"
+              }
+            }]
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-
 
       - run: mvn --errors --show-version deploy -Dmaven.test.skip=true

@@ -176,7 +176,7 @@ jobs:
               "username": "${env.OSS_USER}", 
               "password": "${env.OSS_PASS}",
               "configuration": {
-                "njord.publisher": "sonatype-cp"
+                "njord.publisher": "sonatype-cp",
                 "njord.releaseUrl": "njord:template:release-sca"
               }
             }]

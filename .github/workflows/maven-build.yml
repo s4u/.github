@@ -231,7 +231,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: release-drafter/release-drafter@v7.3.1
+      - uses: release-drafter/release-drafter@v7.4.0
         with:
           publish: false
           name: ${{ needs.setup.outputs.tag }}

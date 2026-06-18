@@ -129,6 +129,8 @@ jobs:
           && matrix.maven == fromJSON( inputs.maven-matrix )[0]
           && github.repository_owner == 's4u'
           && startsWith( github.ref, 'refs/heads/')
+          && needs.setup.outputs.sonar != ''
+
 
       - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
         env:

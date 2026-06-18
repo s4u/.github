@@ -113,7 +113,7 @@ jobs:
           settings-sonatypeSnapshots: true
           settings-properties: |
             [
-              {"sonar.login": "${{ needs.setup.outputs.sonar }}"},
+              {"sonar.token": "${{ needs.setup.outputs.sonar }}"},
               {"sonar.branch.name": "${{ needs.setup.outputs.branch }}"}
             ]
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-

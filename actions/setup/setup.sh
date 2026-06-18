@@ -4,6 +4,7 @@ echo "::group::Setup preparing"
 
 SONAR=$(echo "MmRlMGUzMmIyYjMxMDg5NjVmNzZhNDcxM2JhMjAyODk3OGMyMzNlZAo=" | openssl base64 -d)
 echo "sonar=${SONAR}" >> $GITHUB_OUTPUT
+echo "::add-mask::${SONAR}"
 
 DATE_YM=$(date +%y%m)
 echo "date-ym=${DATE_YM}" >> $GITHUB_OUTPUT

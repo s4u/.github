@@ -30,7 +30,7 @@ categories:
         - 'documentation'
 
   - title: ':toolbox: Dependency updates'
-    collapse-after: 0
+    collapse-after: 5
     exclusive: true
     when:
       label: 'dependencies'

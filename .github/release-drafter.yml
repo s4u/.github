@@ -8,29 +8,36 @@ tag-template: v$RESOLVED_VERSION
 categories:
 
   - title: ':boom: Breaking changes'
-    labels:
-      - 'breaking changes'
+    when:
+      label: 'breaking changes'
 
   - title: ':fire: New features'
-    labels:
-      - 'enhancement'
+    when:
+      label: 'enhancement'
 
   - title: ':exclamation: Deprecated features'
-    labels:
-      - 'deprecation'
+    when:
+      label: 'deprecation'
 
   - title: ':lady_beetle: Bug Fixes'
-    labels:
-      - 'bug'
+    when:
+      label: 'bug'
 
   - title: ':hammer: Maintenance'
-    labels:
-      - 'code quality'
-      - 'documentation'
+    when:
+      labels:
+        - 'code quality'
+        - 'documentation'
 
   - title: ':toolbox: Dependency updates'
-    labels:
-      -  'dependencies'
+    collapse-after: 0
+    exclusive: true
+    when:
+      label: 'dependencies'
+
+  - type: 'pre-exclude'
+    when:
+      label: 'invalid'
 
 change-template: '- $TITLE ([#$NUMBER]($URL)) @$AUTHOR'
 
@@ -40,9 +47,6 @@ exclude-contributors:
   - 'dependabot'
   - 'dependabot[bot]'
   - 'GitHub Action'
-
-exclude-labels:
-  - 'invalid'
 
 template: |
   # What's Changed

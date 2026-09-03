@@ -104,7 +104,7 @@ jobs:
         maven: ${{ fromJSON( inputs.maven-matrix ) }}
 
     steps:
-      - uses: s4u/setup-maven-action@v1.20.0
+      - uses: s4u/setup-maven-action@v1.21.0
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
@@ -145,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: s4u/setup-maven-action@v1.20.0
+      - uses: s4u/setup-maven-action@v1.21.0
         with:
           java-version: ${{ inputs.java-default }}
           java-distribution: ${{ inputs.java-dist-default }}
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: s4u/setup-maven-action@v1.20.0
+      - uses: s4u/setup-maven-action@v1.21.0
         with:
           java-version: ${{ inputs.java-default }}
           java-distribution: ${{ inputs.java-dist-default }}
@@ -202,7 +202,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: s4u/setup-maven-action@v1.20.0
+      - uses: s4u/setup-maven-action@v1.21.0
         with:
           java-version: ${{ inputs.java-default }}
           java-distribution: ${{ inputs.java-dist-default }}

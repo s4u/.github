@@ -39,7 +39,6 @@ categories:
       label: 'invalid'
 
 change-template: '- $TITLE ($NUMBERS) @$AUTHOR'
-change-numbers-separator: ', '
 
 # merge repeated dependency bumps into one entry
 group-changes:

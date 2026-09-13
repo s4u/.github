@@ -30,7 +30,6 @@ categories:
         - 'documentation'
 
   - title: ':toolbox: Dependency updates'
-    collapse-after: 5
     exclusive: true
     when:
       label: 'dependencies'
@@ -39,7 +38,13 @@ categories:
     when:
       label: 'invalid'
 
-change-template: '- $TITLE ([#$NUMBER]($URL)) @$AUTHOR'
+change-template: '- $TITLE ($NUMBERS) @$AUTHOR'
+change-numbers-separator: ', '
+
+# merge repeated dependency bumps into one entry
+group-changes:
+  - pattern: '/^Bump (?<group>.+?) from (?<from>\S+) to (?<to>\S+)$/'
+    title-template: 'Bump $GROUP from $FIRST_FROM to $LAST_TO'
 
 sort-direction: 'ascending'
 

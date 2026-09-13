@@ -52,6 +52,7 @@ exclude-contributors:
   - 'dependabot'
   - 'dependabot[bot]'
   - 'GitHub Action'
+  - 'claude'
 
 template: |
   # What's Changed

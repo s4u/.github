@@ -233,10 +233,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: release-drafter/release-drafter@v7.7.0
+      # temporary: unreleased group-changes feature
+      # see https://github.com/release-drafter/release-drafter/issues/706
+      - uses: slawekjaranowski/release-drafter@feat/group-changes
         with:
           publish: false
           name: ${{ needs.setup.outputs.tag }}
           tag: ${{ needs.setup.outputs.tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

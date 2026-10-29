@@ -55,6 +55,9 @@ on:
       TECH_TOKEN:
         required: true
 
+      SONAR_TOKEN:
+        required: false
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name != 'push' }}
@@ -73,7 +76,6 @@ jobs:
       branch: ${{ steps.setup.outputs.branch }}
       tag: ${{ steps.setup.outputs.tag }}
       date-ym: ${{ steps.setup.outputs.date-ym }}
-      sonar: ${{ steps.setup.outputs.sonar }}
 
     steps:
       - id: setup
@@ -113,7 +115,6 @@ jobs:
           settings-sonatypeSnapshots: true
           settings-properties: |
             [
-              {"sonar.token": "${{ needs.setup.outputs.sonar }}"},
               {"sonar.branch.name": "${{ needs.setup.outputs.branch }}"}
             ]
           cache-prefix: ${{ needs.setup.outputs.date-ym }}-
@@ -121,19 +122,24 @@ jobs:
 
       - name: sonar setup
         id: sonar
-        run: echo "mvn-args=sonar:sonar -P coverage" >> $GITHUB_OUTPUT
+        run: |
+          if [ -n "$SONAR_TOKEN" ]; then
+            echo "mvn-args=sonar:sonar -P coverage" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         if: >
           matrix.os.name == 'ubuntu-latest'
           && matrix.java == '17'
           && matrix.java-dist == fromJSON( inputs.java-dist-matrix )[0]
           && matrix.maven == fromJSON( inputs.maven-matrix )[0]
           && github.repository_owner == 's4u'
+          && hashFiles('.github/sonar-project.properties') != ''
           && startsWith( github.ref, 'refs/heads/')
-          && needs.setup.outputs.sonar != ''
-
 
       - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
         env:
+          SONAR_TOKEN: ${{ steps.sonar.outputs.mvn-args && secrets.SONAR_TOKEN || '' }}
           SIGN_KEY: ${{ secrets.SIGN_KEY }}
           MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

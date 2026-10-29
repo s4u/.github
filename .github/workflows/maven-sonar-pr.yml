@@ -1,0 +1,165 @@
+name: Sonar PR
+
+# Sonar analysis of pull requests without access to secrets - mostly from forks
+# https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/ci-based-analysis/github-actions-for-sonarcloud#analyzing-fork-pull-requests
+#
+# Must be called from workflow_run event of "Pull requests" workflow.
+# Code from pull request is NEVER executed here, the artifact is treated as untrusted data.
+# Scanner configuration is taken from .github/sonar-project.properties of the base repository default branch,
+# repositories without this file have Sonar analysis disabled.
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: false
+
+jobs:
+
+  sonar:
+    name: Sonar
+    runs-on: ubuntu-latest
+
+    if: >
+      github.event.workflow_run.event == 'pull_request'
+      && github.event.workflow_run.conclusion == 'success'
+      && github.repository_owner == 's4u'
+
+    steps:
+      - name: Check artifact
+        id: artifact
+        run: |
+          count=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/artifacts" \
+            --jq '[.artifacts[] | select(.name == "sonar-pr" and .expired == false)] | length')
+          if [ "$count" = "1" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No sonar-pr artifact - nothing to analyze"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+
+      - name: Checkout base configuration
+        if: steps.artifact.outputs.found
+        uses: actions/checkout@v7
+        with:
+          path: base
+          persist-credentials: false
+          sparse-checkout: .github/sonar-project.properties
+          sparse-checkout-cone-mode: false
+
+      - name: Check configuration
+        id: config
+        if: steps.artifact.outputs.found
+        run: |
+          if [ -f base/.github/sonar-project.properties ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Missing .github/sonar-project.properties - Sonar analysis skipped"
+          fi
+
+      - name: Download artifact
+        if: steps.config.outputs.found
+        uses: actions/download-artifact@v8
+        with:
+          name: sonar-pr
+          path: ${{ runner.temp }}/sonar-artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Validate pull request
+        id: pr
+        if: steps.config.outputs.found
+        run: |
+          PR_NUMBER=$(head -n 1 "${RUNNER_TEMP}/sonar-artifact/sonar-pr-number.txt")
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]{1,10}$ ]]; then
+            echo "::error::Invalid PR number"
+            exit 1
+          fi
+
+          # PR data are taken from GitHub API, artifact only provides PR number
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" > "${RUNNER_TEMP}/pr.json"
+
+          PR_HEAD_SHA=$(jq -r .head.sha "${RUNNER_TEMP}/pr.json")
+          if [ "$PR_HEAD_SHA" != "$RUN_HEAD_SHA" ]; then
+            echo "::notice::PR #${PR_NUMBER} head was changed since build - analysis skipped"
+            exit 0
+          fi
+
+          PR_BRANCH=$(jq -r '.head.repo.full_name + "/" + .head.ref' "${RUNNER_TEMP}/pr.json")
+          PR_BASE=$(jq -r .base.ref "${RUNNER_TEMP}/pr.json")
+          for v in "$PR_BRANCH" "$PR_BASE"; do
+            if ! [[ "$v" =~ ^[A-Za-z0-9._/-]{1,255}$ ]]; then
+              echo "::error::Invalid branch name: $v"
+              exit 1
+            fi
+          done
+
+          {
+            echo "number=${PR_NUMBER}"
+            echo "branch=${PR_BRANCH}"
+            echo "base=${PR_BASE}"
+            echo "sha=${PR_HEAD_SHA}"
+          } >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Checkout pull request
+        if: steps.pr.outputs.sha
+        uses: actions/checkout@v7
+        with:
+          path: pr
+          ref: ${{ steps.pr.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Copy build results
+        if: steps.pr.outputs.sha
+        run: |
+          cd "${RUNNER_TEMP}/sonar-artifact"
+          if [ -n "$(find . -type l)" ]; then
+            echo "::error::Symbolic links are not allowed in artifact"
+            exit 1
+          fi
+          # only compiled classes and coverage reports are used
+          find . -type f ! -path '*/.git/*' \( \
+              -path '*/target/classes/*' \
+              -o -path '*/target/test-classes/*' \
+              -o -path '*/target/site/jacoco*/jacoco.xml' \
+            \) -print0 \
+            | rsync -a --from0 --files-from=- ./ "${GITHUB_WORKSPACE}/pr/"
+
+      - name: Prepare configuration
+        if: steps.pr.outputs.sha
+        run: |
+          {
+            cat base/.github/sonar-project.properties
+            echo
+            echo "sonar.host.url=https://sonarcloud.io/"
+            echo "sonar.organization=simplify4u"
+            echo "sonar.scm.revision=${PR_SHA}"
+            echo "sonar.pullrequest.key=${PR_NUMBER}"
+            echo "sonar.pullrequest.branch=${PR_BRANCH}"
+            echo "sonar.pullrequest.base=${PR_BASE}"
+            echo "sonar.pullrequest.provider=GitHub"
+            echo "sonar.pullrequest.github.repository=${GITHUB_REPOSITORY}"
+          } > "${RUNNER_TEMP}/sonar-project.properties"
+          cat "${RUNNER_TEMP}/sonar-project.properties"
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          PR_BRANCH: ${{ steps.pr.outputs.branch }}
+          PR_BASE: ${{ steps.pr.outputs.base }}
+          PR_SHA: ${{ steps.pr.outputs.sha }}
+
+      # sonar-project.properties from pull request is ignored, trusted copy is used
+      - name: Sonar analysis
+        if: steps.pr.outputs.sha
+        uses: SonarSource/sonarqube-scan-action@v8
+        with:
+          projectBaseDir: pr
+          args: >
+            -Dproject.settings=${{ runner.temp }}/sonar-project.properties
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

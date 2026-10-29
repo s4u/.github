@@ -35,25 +35,22 @@ on:
 
     secrets:
       SIGN_KEY:
-        required: true
-
-      SIGN_KEY_PASS:
-        required: true
+        required: false
 
       MAVEN_GPG_KEY:
-        required: true
+        required: false
 
       MAVEN_GPG_PASSPHRASE:
-        required: true
+        required: false
 
       OSS_USER:
-        required: true
+        required: false
 
       OSS_PASS:
-        required: true
+        required: false
 
       TECH_TOKEN:
-        required: true
+        required: false
 
       SONAR_TOKEN:
         required: false

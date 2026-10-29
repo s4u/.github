@@ -22,7 +22,6 @@ jobs:
           - s4u/pgp-keys-map
           - s4u/pgpverify-maven-plugin
           - s4u/setup-maven-action
-          - s4u/sign-maven-plugin
           - s4u/sitemapxml-maven-plugin
           - s4u/slf4j-mock
           - s4u/testing

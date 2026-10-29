@@ -33,6 +33,10 @@ on:
         required: false
         type: string
 
+    secrets:
+      SONAR_TOKEN:
+        required: false
+
 jobs:
 
   setup:
@@ -41,7 +45,6 @@ jobs:
 
     outputs:
       date-ym: ${{ steps.setup.outputs.date-ym }}
-      sonar: ${{ steps.setup.outputs.sonar }}
 
     steps:
       - id: setup
@@ -85,24 +88,55 @@ jobs:
               {"sonar.pullrequest.base": "${{ github.event.pull_request.base.ref }}"},
               {"sonar.pullrequest.branch": "${{ github.event.pull_request.head.repo.full_name }}/${{ github.event.pull_request.head.ref }}"},
               {"sonar.pullrequest.github.repository": "${{ github.repository }}"},
-              {"sonar.token": "${{ needs.setup.outputs.sonar }}"},
               {"sonar.scm.revision": "${{ github.event.pull_request.head.sha }}"}
             ]
           cache-prefix: ${{ needs.setup.outputs.date-ym}}-
           cache-path-add: ~/.sonar/cache
 
+      # PRs from forks have no access to secrets,
+      # analysis is done by sonar-pr.yml workflow from uploaded artifact
       - name: sonar setup
         id: sonar
-        run: echo "mvn-args=sonar:sonar -P coverage" >> $GITHUB_OUTPUT
+        run: |
+          if [ -n "$SONAR_TOKEN" ]; then
+            echo "mvn-args=sonar:sonar -P coverage" >> "$GITHUB_OUTPUT"
+            echo "token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "mvn-args=-P coverage" >> "$GITHUB_OUTPUT"
+            echo "artifact=true" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         if: >
           matrix.os.name == 'ubuntu-latest'
           && matrix.java == '17'
           && matrix.java-dist == fromJSON( inputs.java-dist-matrix )[0]
           && matrix.maven == fromJSON( inputs.maven-matrix )[0]
           && github.repository_owner == 's4u'
-          && needs.setup.outputs.sonar != ''
+          && hashFiles('.github/sonar-project.properties') != ''
 
       - run: mvn --errors --show-version verify ${{ steps.sonar.outputs.mvn-args }}
+        env:
+          SONAR_TOKEN: ${{ steps.sonar.outputs.token && secrets.SONAR_TOKEN || '' }}
+
+      - name: sonar - store PR number
+        if: steps.sonar.outputs.artifact
+        run: echo "$PR_NUMBER" > sonar-pr-number.txt
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: sonar - upload artifact
+        if: steps.sonar.outputs.artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: sonar-pr
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            sonar-pr-number.txt
+            **/target/classes/
+            **/target/test-classes/
+            **/target/site/jacoco*/jacoco.xml
 
   site-test:
     name: Maven Site

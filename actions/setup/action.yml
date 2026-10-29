@@ -11,9 +11,6 @@ outputs:
   date-ym:
     description: ''
     value: ${{ steps.setup.outputs.date-ym }}
-  sonar:
-    description: ''
-    value: ${{ steps.setup.outputs.sonar }}
 
 runs:
   using: "composite"
